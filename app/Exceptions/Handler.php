@@ -53,7 +53,7 @@ class Handler extends ExceptionHandler
             return $this->unauthenticated($request, $e);
         }
 
-        // return parent::render($request, $e);
+        return parent::render($request, $e);
         
     }
 

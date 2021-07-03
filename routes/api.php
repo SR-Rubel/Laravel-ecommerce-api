@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ForgotController;
 use App\Http\Controllers\api\UserController;
@@ -25,6 +27,14 @@ Route::post('reset-password',[ForgotController::class,'resetPassword']);
 Route::middleware(['auth:api'])->group(function () {
     Route::get('profile',[UserController::class,'profile']);
     Route::get('logout',[UserController::class,'logout']);
+});
+
+Route::group(['prefix'=>'admin','middleware'=>['auth:api','admin']],function () {
+    Route::get('/dashboard',function(){
+        return "hello admin";
+        // return Auth::user()->isadmin;
+    });
+    Route::get('/user-list',[AdminController::class,'allUser']);
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

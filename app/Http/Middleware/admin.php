@@ -17,9 +17,11 @@ class admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::check() && Auth::user()->isAdmin){
+        if(Auth::check() && Auth::user()->isadmin){
             
             return $next($request);
         }
+
+        return response()->json(['status'=>0,'msg'=>"you are a normal user"],401);
     }
 }
