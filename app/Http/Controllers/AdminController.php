@@ -12,4 +12,8 @@ class AdminController extends Controller
         $users=User::all();
         return response()->json(['status'=>1,'data'=>$users],200);
     }
+    public function store()
+    {
+        
+    }
 }
