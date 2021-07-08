@@ -40,7 +40,6 @@ class CategoryController extends Controller
         ]);
         $cat=Category::where('id',$id)->update(['name'=>$request->name]);
         return response()->json(["status"=>0,"msg"=>$cat?'categroy updated successfully':"category not found",'id'=>$cat],$cat?200:404);
-        return $id;
     }
 
 }

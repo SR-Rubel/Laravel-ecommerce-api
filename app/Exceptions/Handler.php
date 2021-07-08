@@ -60,12 +60,12 @@ class Handler extends ExceptionHandler
     protected function convertValidationExceptionToResponse(ValidationException $e, $request)
     {
         if ($e instanceof ValidationException) {
-            return $this->convertValidationExceptionToResponse($e, $request);
+            return response()->json(["erorr"=>$e->validator->errors()],422);
         }
 
-        // return $request->expectsJson()
-        //             ? $this->invalidJson($request, $e)
-        //             : $this->invalid($request, $e);
+        return $request->expectsJson()
+                    ? $this->invalidJson($request, $e)
+                    : $this->invalid($request, $e);
     }
 
     protected function unauthenticated($request, AuthenticationException $exception)

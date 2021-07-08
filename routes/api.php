@@ -38,7 +38,7 @@ Route::group(['prefix'=>'admin','middleware'=>['auth:api','admin']],function () 
     Route::post('/add-category',[CategoryController::class,'store']);
     Route::get('/list-category',[CategoryController::class,'index']);
     Route::delete('/delete-category/{id}',[CategoryController::class,'delete']);
-    Route::patch('/edit-category/{id}',[CategoryController::class,'edit']);
+    Route::post('/edit-category/{id}',[CategoryController::class,'edit']);
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
