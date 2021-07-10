@@ -1,0 +1,133 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
+
+class ProductController extends Controller
+{
+    
+
+    public function index()
+    {
+        $products=Product::all();
+
+        return response()->json(['status'=>1,'data'=>$products],200);
+    }
+
+    public function create(Request $request)
+    {
+
+        $request->validate([
+            'category_id'=>'required',
+            'name'=>'required',
+            'details'=>'required',
+            'price'=>'required',
+            'image'=>'required',
+        ]);
+        
+        $product=new Product();
+        
+        $product->name=$request->name;
+        $product->category_id=$request->category_id;
+        $product->subcategory_id=$request->subcategory_id;
+        $product->brand_id=$request->brand_id;
+
+        if($product->category_id&&$product->brand_id)
+        {
+            // $res='';
+            $brand=Brand::find($product->brand_id);
+            $cat=Category::find($product->category_id);
+            if($brand && $cat){
+                if(!$brand->categories()->where('category_id',$product->category_id)->exists())
+                    $brand->categories()->attach($product->category_id);
+            }
+            else
+            return response()->json(['msg'=>'brand or category not found'],404);
+        }
+
+        $product->details=$request->details;
+        $product->price=$request->price;
+        $product->size=$request->size;
+        $product->color=$request->color;
+        $product->discount_price=$request->discount_price;
+        $product->stockout=$request->stockout;
+        $product->hot_deal=$request->hot_deal;
+        $product->buy_one_get_one=$request->buy_one_get_one;
+        $image=$request->image;
+        $product->image=$image;
+        if($image){
+            $image_f=uniqid().'.'.'jpg';
+            // $path = public_path()$image_f;
+            Image::make($image)->resize(500,300)->save(public_path('images/products/'.$image_f).'',5,'jpg');
+            $product->image=$image_f;
+        }
+
+        $product->save();
+        return response()->json(['msg'=>'product added'],200);
+    }
+
+    
+    public function update(Request $request,$id)
+    {
+        $request->validate([
+            'category_id'=>'required',
+            'name'=>'required',
+            'details'=>'required',
+            'price'=>'required',
+            'image'=>'required',
+        ]);
+
+        $up_product['details']=$request->details;
+        $up_product['price']=$request->price;
+        $up_product['size']=$request->size;
+        $up_product['color']=$request->color;
+        $up_product['discount_price']=$request->discount_price;
+        $up_product['stockout']=$request->stockout;
+        $up_product['hot_deal']=$request->hot_deal;
+        $up_product['buy_one_get_one']=$request->buy_one_get_one;
+        $image=$request->image;
+        $up_product['image']=$image;
+
+        if($image){
+            // deleting previous image from local directory
+            $prev_product=Product::find($id);
+            unlink(public_path('images/products/').$prev_product->image);
+
+            //saving updated image in local directory and in database
+            $image_f=uniqid().'.'.'jpg';
+            Image::make($image)->resize(500,300)->save(public_path('images/products/'.$image_f).'',5,'jpg');
+            $up_product['image']=$image_f;
+        }
+
+        $up_product=Product::where('id',$id)->update($up_product);
+        return response()->json(["status"=>0,"msg"=>$up_product?'product updated successfully':"product name not found",'id'=>$up_product],$up_product?200:404);
+    }
+
+    public function delete($id)
+    {
+        $deleted_product=Product::find($id);
+        $product= Product::where('id',$id)->delete();
+
+        // delete image from public directory
+        if($product)
+            unlink(public_path('images/products/').$deleted_product->image);
+
+        //deleting empty categories of brand where no product is available
+        if($product)
+        if(Brand::find($deleted_product->brand_id)->categories()->where('category_id',$deleted_product->category_id)->exists()){
+            if(!Category::find($deleted_product->category_id)->products()->where('brand_id',$deleted_product->brand_id)->exists())
+                Brand::find($deleted_product->brand_id)->categories()->detach($deleted_product->category_id);
+
+        }
+
+
+    return response()->json(["status"=>0,"msg"=>$product?'product deleted successfully':"product not found"],$product?200:404);
+    }
+
+
+}

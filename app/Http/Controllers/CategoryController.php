@@ -13,7 +13,7 @@ class CategoryController extends Controller
         return response()->json(['status'=>1,'data'=>$categories],200);
     }
 
-    public function store(Request $request)
+    public function create(Request $request)
     {
 
         $request->validate([
@@ -23,17 +23,16 @@ class CategoryController extends Controller
         $category=new Category();
         $category->name=$request->name;
         $category->save();
-
         return response()->json(["status"=>1,"msg"=>'categroy added'],200);
     }
 
     public function delete($id)
     {
         $cat=Category::where('id',$id)->delete();
-        return response()->json(["status"=>0,"msg"=>$cat?'categroy deleted successfully':"category not found",'id'=>$cat],$cat?200:404);
+        return response()->json(["status"=>0,"msg"=>$cat?'categroy deleted successfully':"category not found",'id'=>$id],$cat?200:404);
     }
 
-    public function edit(Request $request,$id)
+    public function update(Request $request,$id)
     {
          $request->validate([
              'name'=>'required',
