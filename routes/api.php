@@ -48,7 +48,8 @@ Route::group(['prefix'=>'admin','middleware'=>[]],function () {
 
     //subcategory route
     Route::post('/add-sub-category',[SubCategoryController::class,'create']);
-    Route::get('/category/{id}/subcategories',[SubCategoryController::class,'index']);
+    Route::get('/category/{id}/subcategories',[SubCategoryController::class,'cat_wise_subcat']);
+    Route::get('/list-subcategories',[SubCategoryController::class,'index']);
     Route::delete('/delete-subcategory/{id}',[SubCategoryController::class,'delete']);
     Route::post('/edit-subcategory/{id}',[SubCategoryController::class,'update']);
 

@@ -12,7 +12,8 @@
         "intervention/image": "^2.5",
         "laravel/framework": "^8.40",
         "laravel/passport": "^10.1",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "nesbot/carbon": "^2.50"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

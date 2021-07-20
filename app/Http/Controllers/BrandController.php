@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BrandController extends Controller
 {
@@ -17,7 +18,6 @@ class BrandController extends Controller
         $brand=Brand::find($id);
         if(!$brand)
         return response()->json(['status'=>0,'msg'=>'no such brand'],404);
-
         $categories=$brand->categories;
         return response()->json(['status'=>1,'data'=>$categories],200);
     }
@@ -26,13 +26,14 @@ class BrandController extends Controller
     {
 
         $request->validate([
-            'name'=>'required|unique:brands',
+            'name'=>'required',
         ]);
         
         $brand=new Brand();
         $brand->name=$request->name;
         $brand->save();
-        return response()->json(['msg'=>'brand added'],200);
+        $last=DB::table('brands')->latest()->first();
+        return response()->json(['status'=>1,'msg'=>'brand added','data'=>$last],200);
     }
 
     
@@ -42,7 +43,7 @@ class BrandController extends Controller
             'name'=>'required',
         ]);
         $brand=Brand::where('id',$id)->update(['name'=>$request->name]);
-        return response()->json(["status"=>0,"msg"=>$brand?'brand name updated successfully':"Brand name not found",'id'=>$brand],$brand?200:404);
+        return response()->json(["status"=>1,"msg"=>$brand?'brand name updated successfully':"Brand name not found",'id'=>$brand],$brand?200:404);
     }
 
     public function delete($id)

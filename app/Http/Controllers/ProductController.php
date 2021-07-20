@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
-use App\Models\Category;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
@@ -47,7 +48,7 @@ class ProductController extends Controller
                     $brand->categories()->attach($product->category_id);
             }
             else
-            return response()->json(['msg'=>'brand or category not found'],404);
+            return response()->json(['status'=>0,'msg'=>'brand or category not found'],404);
         }
 
         $product->details=$request->details;
@@ -68,7 +69,8 @@ class ProductController extends Controller
         }
 
         $product->save();
-        return response()->json(['msg'=>'product added'],200);
+        $last=DB::table('products')->latest()->first();
+        return response()->json(['status'=>1,'data'=>$last,'msg'=>'product added'],200);
     }
 
     
@@ -82,6 +84,7 @@ class ProductController extends Controller
             'image'=>'required',
         ]);
 
+        $up_product['name']=$request->name;
         $up_product['details']=$request->details;
         $up_product['price']=$request->price;
         $up_product['size']=$request->size;
@@ -118,11 +121,14 @@ class ProductController extends Controller
             unlink(public_path('images/products/').$deleted_product->image);
 
         //deleting empty categories of brand where no product is available
-        if($product)
-        if(Brand::find($deleted_product->brand_id)->categories()->where('category_id',$deleted_product->category_id)->exists()){
-            if(!Category::find($deleted_product->category_id)->products()->where('brand_id',$deleted_product->brand_id)->exists())
-                Brand::find($deleted_product->brand_id)->categories()->detach($deleted_product->category_id);
+        if($product){
 
+           if(Brand::find($deleted_product->brand_id) )
+            if(Brand::find($deleted_product->brand_id)->categories()->where('category_id',$deleted_product->category_id)->exists()){
+                    if(!Category::find($deleted_product->category_id)->products()->where('brand_id',$deleted_product->brand_id)->exists())
+                        Brand::find($deleted_product->brand_id)->categories()->detach($deleted_product->category_id);
+        
+                }
         }
 
 
