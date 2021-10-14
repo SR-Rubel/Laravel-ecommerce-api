@@ -15,7 +15,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products=Product::all();
+        $products=Product::paginate(10);
 
         return response()->json(['status'=>1,'data'=>$products],200);
     }
@@ -40,7 +40,6 @@ class ProductController extends Controller
 
         if($product->category_id&&$product->brand_id)
         {
-            // $res='';
             $brand=Brand::find($product->brand_id);
             $cat=Category::find($product->category_id);
             if($brand && $cat){
