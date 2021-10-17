@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
@@ -15,7 +16,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products=Product::paginate(10);
+        $products=Product::simplepaginate(15);
 
         return response()->json(['status'=>1,'data'=>$products],200);
     }

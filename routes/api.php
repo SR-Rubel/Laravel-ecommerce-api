@@ -1,16 +1,14 @@
 <?php
 
-use App\Models\SubCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ForgotController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\api\UserController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\api\AdminController;
+use App\Http\Controllers\api\BrandController;
+use App\Http\Controllers\api\ProductController;
+use App\Http\Controllers\api\CategoryController;
+use App\Http\Controllers\api\SubCategoryController;
 
 /*
 |--------------------------------------------------------------------------
