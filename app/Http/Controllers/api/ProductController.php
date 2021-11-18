@@ -8,6 +8,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\SubCategory;
 use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
@@ -133,6 +134,24 @@ class ProductController extends Controller
 
 
     return response()->json(["status"=>0,"msg"=>$product?'product deleted successfully':"product not found"],$product?200:404);
+    }
+
+
+    public function cat_wise_products($id)
+    {
+        $products=Category::findOrFail($id)->products()->get();
+        return $this->customResponse($products);
+    }
+
+    public function subCat_wise_products($id)
+    {
+        $products=SubCategory::findOrFail($id)->products()->get();
+        return $this->customResponse($products);
+    }
+    public function brand_wise_products($id)
+    {
+        $products=Brand::findOrFail($id)->products()->get();
+        return $this->customResponse($products);
     }
 
 

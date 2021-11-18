@@ -3,15 +3,22 @@
 namespace App\Exceptions;
 
 use Throwable;
-
-
+use Illuminate\Support\Str;
+use App\Traits\jsonResponser;
+use Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 class Handler extends ExceptionHandler
 {
+    use jsonResponser;
     /**
      * A list of the exception types that are not reported.
      *
@@ -49,12 +56,50 @@ class Handler extends ExceptionHandler
         if ($e instanceof ValidationException) {
             return $this->convertValidationExceptionToResponse($e, $request);
         }
-        if ($e instanceof AuthenticationException) {
+
+        else if($e instanceof ModelNotFoundException){
+            $modelName=Str::lower(class_basename($e->getModel()));
+            return $this->errorResponse("does not exit any {$modelName} with the specified id",404);
+        }
+
+        else if ($e instanceof AuthenticationException) {
             return $this->unauthenticated($request, $e);
         }
 
-        return parent::render($request, $e);
-        
+        else if ($e instanceof AuthorizationException) {
+            return $this->errorResponse($e->getMessage(),403);
+        }
+   
+        else if ($e instanceof MethodNotAllowedException) {
+            return $this->errorResponse('The specified method for the request is invalid', 405);
+        }
+
+        else if($e instanceof NotFoundHttpException){
+            return $this->errorResponse('The specified URL cannot be found', 404);
+        }
+
+        else if($e instanceof HttpException){
+            return $this->errorResponse($e->getMessage(), $e->getStatusCode());
+        }
+
+        else if($e instanceof QueryException){
+            $errorCode = $e->errorInfo[1];
+
+            if ($errorCode == 1451) {
+                return $this->errorResponse('Cannot remove this resource permanently. It is related with any other resource', 409);
+            }
+        }
+
+        else if($e instanceof TokenMismatchException){
+            return redirect()->back()->withInput($request->input());
+        }
+
+        else if(config('app.debug')){
+
+            return parent::render($request, $e);
+        }
+
+        return $this->errorResponse('Unexpected error. Try again later',500);
     }
 
     protected function convertValidationExceptionToResponse(ValidationException $e, $request)
@@ -62,10 +107,6 @@ class Handler extends ExceptionHandler
         if ($e instanceof ValidationException) {
             return response()->json(["erorr"=>$e->validator->errors()],422);
         }
-
-        return $request->expectsJson()
-                    ? $this->invalidJson($request, $e)
-                    : $this->invalid($request, $e);
     }
 
     protected function unauthenticated($request, AuthenticationException $exception)

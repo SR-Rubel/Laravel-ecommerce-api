@@ -56,9 +56,9 @@ class UserController extends Controller
     }
 
     public function profile(){
-        $user=auth()->user();
+        $user=User::find(auth()->user()->id);
 
-        return response()->json(['status'=>1,'msg'=>auth()->user()],200);
+        return $this->oneResponse($user);
     }
     public function logout(){
         // if (Auth::check()) {
