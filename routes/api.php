@@ -87,12 +87,12 @@ Route::group(['prefix'=>'admin','middleware'=>[]],function () {
     Route::get('/brand/{id}/products',[ProductController::class,'brand_wise_products']);
 
     //cart
-    Route::apiResource('/carts',CartController::class);
+    Route::apiResource('/carts',CartController::class,["only"=>["store","show"]]);
     Route::delete('carts/{user_id}/product/{product_id}',[CartController::class,'delete_product_from_cart']);
     Route::delete('carts/empty/{user_id}',[CartController::class,'delete_cart']);
 
     //wsihlist
-    Route::apiResource('/wishlists',WishlistController::class);
+    Route::apiResource('/wishlists',WishlistController::class,["only"=>["store","show"]]);
     Route::delete('wishlists/{user_id}/product/{product_id}',[WishlistController::class,'delete_product_from_wishlist']);
     Route::delete('wishlists/empty/{user_id}',[WishlistController::class,'delete_wishlist']);
     //order
