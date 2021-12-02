@@ -27,12 +27,12 @@ class productFactory extends Factory
     {
         return [
             'category_id' =>Category::all()->random()->id,
-            'subcategory_id'=>SubCategory::all()->random()->id,
+            'sub_category_id'=>SubCategory::all()->random()->id,
             'brand_id'=>Brand::all()->random()->id,
             'name' => $this->faker->word(),
             'details' =>$this->faker->paragraph(1),
             'price' =>$this->faker->numberBetween(50,100),
-            'image' =>$this->faker->randomElement(['1.jpg','2.jpg','3.jpg']),
+            'image' =>$this->faker->randomElement(['1.png','2.png','3.png']),
             'size' =>$this->faker->randomElement(['M','XL','XXL','L']),
             'color' =>$this->faker->randomElement(['red','green','blue','yellow','white','balck','offwhite']),
             'discount_price'=>$this->faker->randomElement(['10','15']),

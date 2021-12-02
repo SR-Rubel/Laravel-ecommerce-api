@@ -17,6 +17,15 @@ class CreateOrderdetailsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('product_id');
+            $table->string("address");
+            $table->string("address_2");
+            $table->string("city");
+            $table->string("state");
+            $table->string("zip");
+            $table->string("country");
+            $table->string("phone");
+            $table->string("district");
+            $table->string("post_office");
             $table->timestamps();
         });
     }

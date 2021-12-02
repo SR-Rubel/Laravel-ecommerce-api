@@ -37,7 +37,7 @@ class ProductController extends Controller
         
         $product->name=$request->name;
         $product->category_id=$request->category_id;
-        $product->subcategory_id=$request->subcategory_id;
+        $product->sub_category_id=$request->subcategory_id;
         $product->brand_id=$request->brand_id;
 
         if($product->category_id&&$product->brand_id)
@@ -65,7 +65,7 @@ class ProductController extends Controller
         if($image){
             $image_f=uniqid().'.'.'jpg';
             // $path = public_path()$image_f;
-            Image::make($image)->resize(500,300)->save(public_path('images/products/'.$image_f).'',5,'jpg');
+            Image::make($image)->resize(500,300)->save(public_path('images/products/'.$image_f).'',100,'jpg');
             $product->image=$image_f;
         }
 
@@ -104,7 +104,10 @@ class ProductController extends Controller
 
             //saving updated image in local directory and in database
             $image_f=uniqid().'.'.'jpg';
-            Image::make($image)->resize(500,300)->save(public_path('images/products/'.$image_f).'',5,'jpg');
+            // Image::make($image)->resize(500,300)->save(public_path('images/products/'.$image_f).'',5,'jpg');
+            // image can be resize also image encoding can change by Image pakage
+            // here 5 is for image quality or compression in can be from 0 to 100
+            Image::make($image)->save(public_path('images/products/'.$image_f).'',100,'png');
             $up_product['image']=$image_f;
         }
 
@@ -119,7 +122,9 @@ class ProductController extends Controller
 
         // delete image from public directory
         if($product)
-            unlink(public_path('images/products/').$deleted_product->image);
+
+            if(file_exists(public_path('images/products/').$deleted_product->image))
+                unlink(public_path('images/products/').$deleted_product->image);
 
         //deleting empty categories of brand where no product is available
         if($product){
