@@ -4,9 +4,10 @@ namespace App\Exceptions;
 
 use Throwable;
 use Illuminate\Support\Str;
-use App\Traits\jsonResponser as TraitsJsonResponser;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -18,7 +19,49 @@ use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 class Handler extends ExceptionHandler
 {
-    use TraitsJsonResponser;
+    private function successResponse($data,$code=200){
+        return response()->json($data,$code);
+    }
+
+    //this will return single instance json response
+    protected function oneResponse(Model $instance, $code=200)
+    {
+        $transformer=$instance->transformer;
+        $instance=$this->transformData($instance,$transformer);
+
+        return $this->successResponse($instance,$code);
+    }
+
+    //this will return multiple instance json response
+    protected function mutliResponse(Collection $collection,$code=200)
+    {
+        if($collection->isEmpty()){
+            return $this->successResponse(["data"=>$collection],$code);
+        }
+
+        $transformer=$collection->first()->transformer;
+        $collection=$this->transformData($collection,$transformer);
+        return $this->successResponse(["data"=>$collection],$code);
+    }
+    // this will return error response with http error code
+    protected function errorResponse($msg,$code)
+    {
+        return response()->json(['error'=>$msg,'code'=>$code],$code);
+    }
+
+    // this will return custom response
+    protected function customResponse($msg_or_data,$code=200)
+    {
+        return response()->json($msg_or_data,$code);
+    }
+
+    protected function transformData($data,$transformer)
+    {
+        $transformation=fractal($data,new $transformer);
+        return $transformation->toArray();
+    }
+
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -102,6 +145,7 @@ class Handler extends ExceptionHandler
         return $this->errorResponse('Unexpected error. Try again later',500);
     }
 
+    
     protected function convertValidationExceptionToResponse(ValidationException $e, $request)
     {
         if ($e instanceof ValidationException) {
