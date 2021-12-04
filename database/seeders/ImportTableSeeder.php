@@ -23,7 +23,7 @@ class ImportTableSeeder extends Seeder
             'database' => env('d37t7rfil4a0mg')
         ];
   
-        exec("mysql --user={$db['username']} --password={$db['password']} --host={$db['host']} --database {$db['database']} < $sql");
+        exec("psql --user={$db['username']} --password={$db['password']} --host={$db['host']} --database {$db['database']} -f $sql");
   
         Log::info('SQL Import Done');
     }
