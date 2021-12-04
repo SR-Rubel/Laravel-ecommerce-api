@@ -17,10 +17,10 @@ class ImportTableSeeder extends Seeder
         $sql = public_path('data.sql');
           
         $db = [
-            'username' => env('txexzldjlxfqlm'),
-            'password' => env('d196ca3a2c0692b5913a4e44e4df0bf6f1e46d33324e52c87d1f8fa62a1e4b7c'),
-            'host' => env('ec2-176-34-105-15.eu-west-1.compute.amazonaws.com'),
-            'database' => env('d37t7rfil4a0mg')
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
+            'host' => env('DB_HOST'),
+            'database' => env('DB_DATABASE')
         ];
   
         exec("psql -U {$db['username']} -W {$db['password']} -h {$db['host']} -d {$db['database']} -f $sql");
