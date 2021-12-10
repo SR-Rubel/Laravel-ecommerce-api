@@ -15,14 +15,14 @@ class Product extends Model
 
     public function brand()
     {
-        $this->belongsTo(Brand::class);
+        return $this->belongsTo(Brand::class);
     }
     public function category()
     {
-        $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class);
     }
     public function subcategory()
     {
-        $this->belongsTo(SubCategory::class);
+        return $this->belongsTo(SubCategory::class,'sub_category_id');
     }
 }

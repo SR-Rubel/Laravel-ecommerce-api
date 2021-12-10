@@ -69,19 +69,20 @@ Route::group(['prefix'=>'admin','middleware'=>[]],function () {
 
 // ====================common routes=====================
 
-    //category route
-    Route::get('/list-category',[CategoryController::class,'index']);
+//category route
+Route::get('/list-category',[CategoryController::class,'index']);
 
-    //subcategory route
-    Route::get('/list-subcategories',[SubCategoryController::class,'index']);
-    Route::get('/category/{id}/subcategories',[SubCategoryController::class,'cat_wise_subcat']);
+//subcategory route
+Route::get('/list-subcategories',[SubCategoryController::class,'index']);
+Route::get('/category/{id}/subcategories',[SubCategoryController::class,'cat_wise_subcat']);
 
-    //brand
-    Route::get('/brand-list',[BrandController::class,'index']);
-    Route::get('/brand/{id}/categories',[BrandController::class,'brandCategory']);
+//brand
+Route::get('/brand-list',[BrandController::class,'index']);
+Route::get('/brand/{id}/categories',[BrandController::class,'brandCategory']);
 
-    // products
+// products
     Route::get('/all-product',[ProductController::class,'index']);
+    Route::get('/product/{id}',[ProductController::class,'show']);
     Route::get('/category/{id}/products',[ProductController::class,'cat_wise_products']);
     Route::get('/sub-category/{id}/products',[ProductController::class,'subCat_wise_products']);
     Route::get('/brand/{id}/products',[ProductController::class,'brand_wise_products']);

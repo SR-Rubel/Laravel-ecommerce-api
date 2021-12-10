@@ -74,6 +74,15 @@ class ProductController extends Controller
         return response()->json(['status'=>1,'data'=>$last,'msg'=>'product added'],200);
     }
 
+
+    public function show($id)
+    {
+        $product=Product::findOrFail($id);
+        $product->category;
+        $product->subcategory;
+        $product->brand;
+        return $this->customResponse($product);
+    }
     
     public function update(Request $request,$id)
     {

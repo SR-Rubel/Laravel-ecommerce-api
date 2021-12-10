@@ -32,7 +32,7 @@ class productFactory extends Factory
             'name' => $this->faker->word(),
             'details' =>$this->faker->paragraph(1),
             'price' =>$this->faker->numberBetween(50,100),
-            'image' =>$this->faker->randomElement(['1.png','2.png','3.png']),
+            'image' =>$this->faker->randomElement(['1.png','2.png','3.png','4.png','5.png']),
             'size' =>$this->faker->randomElement(['M','XL','XXL','L']),
             'color' =>$this->faker->randomElement(['red','green','blue','yellow','white','balck','offwhite']),
             'discount_price'=>$this->faker->randomElement(['10','15']),
