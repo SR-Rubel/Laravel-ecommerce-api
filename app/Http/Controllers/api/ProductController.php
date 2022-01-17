@@ -15,6 +15,44 @@ class ProductController extends Controller
 {
     
 
+    /**
+     * @OA\Get(
+     ** path="/all-product",
+     *   tags={"Products"},
+     *   summary="products",
+     *   operationId="products",
+     *
+     *   @OA\Response(
+     *      response=201,
+     *       description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *   @OA\Response(
+     *      response=401,
+     *       description="Unauthenticated"
+     *   ),
+     *   @OA\Response(
+     *      response=400,
+     *      description="Bad Request"
+     *   ),
+     *   @OA\Response(
+     *      response=404,
+     *      description="not found"
+     *   ),
+     *   @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *   )
+     *)
+     **/
+    /**
+     * Register api
+     *
+     * @return \Illuminate\Http\Response
+     */
+
     public function index()
     {
         $products=Product::simplepaginate(15);

@@ -8,6 +8,38 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+/**
+     * @OA\Info(
+     *      version="1.0.0",
+     *      title="Laravel single vendor ecommerce api",
+     *      description="making a personal shop",
+     *      @OA\Contact(
+     *          email="rubel162765@gmail.com"
+     *      ),
+     *      @OA\License(
+     *          name="Apache 2.0",
+     *          url="http://www.apache.org/licenses/LICENSE-2.0.html"
+     *      )
+     * )
+     * 
+     * @OA\SecurityScheme(
+     *    securityScheme="bearerAuth",
+     *    in="header",
+     *    name="bearerAuth",
+     *    type="http",
+     *    scheme="bearer",
+     *    bearerFormat="passport",
+     * ),
+     *
+     * @OA\Server(
+     *      url="http://mayabotishop.herokuapp.com/api/",
+     *      description="Demo API Server"
+     * )
+
+     *
+     *
+     */
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
