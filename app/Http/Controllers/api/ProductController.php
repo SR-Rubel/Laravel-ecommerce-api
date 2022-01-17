@@ -55,9 +55,13 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products=Product::simplepaginate(15);
+        $product=Product::orderBy('created_at', 'Desc')->paginate(15);
+        $product->each(function($item,$key){
+            
+            $item->image= asset('storage/images/products/'.$item->image);
+        });
 
-        return response()->json(['status'=>1,'data'=>$products],200);
+        return response()->json(['status'=>1,'data'=>$product],200);
     }
 
     public function create(Request $request)
@@ -101,9 +105,9 @@ class ProductController extends Controller
         $image=$request->image;
         $product->image=$image;
         if($image){
-            $image_f=uniqid().'.'.'jpg';
+            $image_f=uniqid().'.'.'png';
             // $path = public_path()$image_f;
-            Image::make($image)->resize(500,300)->save(public_path('images/products/'.$image_f).'',100,'jpg');
+            Image::make($image)->resize(500,300)->save(public_path('storage/images/products/'.$image_f).'',100,'png');
             $product->image=$image_f;
         }
 
@@ -147,14 +151,14 @@ class ProductController extends Controller
         if($image){
             // deleting previous image from local directory
             $prev_product=Product::find($id);
-            unlink(public_path('images/products/').$prev_product->image);
+            unlink(public_path('storage/images/products/').$prev_product->image);
 
             //saving updated image in local directory and in database
             $image_f=uniqid().'.'.'jpg';
             // Image::make($image)->resize(500,300)->save(public_path('images/products/'.$image_f).'',5,'jpg');
             // image can be resize also image encoding can change by Image pakage
             // here 5 is for image quality or compression in can be from 0 to 100
-            Image::make($image)->save(public_path('images/products/'.$image_f).'',100,'png');
+            Image::make($image)->save(public_path('storage/images/products/'.$image_f).'',100,'png');
             $up_product['image']=$image_f;
         }
 
@@ -170,8 +174,8 @@ class ProductController extends Controller
         // delete image from public directory
         if($product)
 
-            if(file_exists(public_path('images/products/').$deleted_product->image))
-                unlink(public_path('images/products/').$deleted_product->image);
+            if(file_exists(public_path('storage/images/products/').$deleted_product->image))
+                unlink(public_path('storage/images/products/').$deleted_product->image);
 
         //deleting empty categories of brand where no product is available
         if($product){
